@@ -294,6 +294,7 @@ export default Vue.extend({
                     stallId: this.formData.pointId ? [this.formData.pointId] : [],
                     varietyId: this.formData.varietyId,
                     taskStatus: this.formData.taskStatus,
+                    taskSource: '2',
                 },
                 pageNo: this.pagination.pageNo,
                 pageSize: this.pagination.pageSize,

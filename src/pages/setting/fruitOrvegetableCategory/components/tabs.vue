@@ -15,7 +15,7 @@ export default {
       tabList: [
         { label: '按果径', value: 'DIAMETER' },
         { label: '按重量', value: 'WEIGHT' },
-        { label: '按统果', value: 'TONGGUO' },
+        { label: '按统果', value: 'WHOLE' },
       ],
       tabValue: 'DIAMETER',
       veggeCategory:{},

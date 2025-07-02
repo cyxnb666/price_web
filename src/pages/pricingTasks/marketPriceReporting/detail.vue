@@ -157,8 +157,8 @@
                           </div>
                           <t-table :data="currentCategoryData.specss || []" :columns="priceColumns" rowKey="id"
                             bordered>
-                            <template #fvSpecsUnit="{ row }">
-                              <span>{{ fvSpecsUnit[row.fvSpecsUnit] }}</span>
+                            <template #specsType="{ row }">
+                              <span>{{ specsType[row.specsType] }}</span>
                             </template>
                             <template #specification="{ row }">
                               <span>{{ formater(row, row.fvSpecsUnit) }}</span>
@@ -230,10 +230,10 @@
                           <!-- <div class="pricing-images-section">
                             <div class="section-subtitle">采价信息</div>
                             <div class="credentials-container">
-                              <t-image-viewer 
-                                v-for="(file, index) in currentCollectImageFiles" 
+                              <t-image-viewer
+                                v-for="(file, index) in currentCollectImageFiles"
                                 :key="file.fileId"
-                                :default-index="index" 
+                                :default-index="index"
                                 :images="currentCollectImageUrls"
                               >
                                 <template #trigger="{ open }">
@@ -337,9 +337,10 @@ export default Vue.extend({
       confirmDialogContent: '',
       pendingAuditResult: '', // 暂存待提交的审核结果
       collectResource: '',
-      fvSpecsUnit: {
-        mm: '按果径',
-        g: '按重量',
+      specsType: {
+        DIAMETER: '按果径',
+        WEIGHT: '按重量',
+        WHOLE: '按统果',
       },
       BaseUrl: env[import.meta.env.MODE].imageUrl,
       loading: false,
@@ -360,7 +361,7 @@ export default Vue.extend({
       pricingPoints: [],
       priceColumns: [
         { title: '渠道', colKey: 'saleChannelCnm' },
-        { title: '计价方式', colKey: 'fvSpecsUnit' },
+        { title: '计价方式', colKey: 'specsType' },
         { title: '规格', colKey: 'specification' },
         { title: '价格', colKey: 'unitPriceStr' },
         { title: '数量（kg）', colKey: 'weight' },
@@ -456,7 +457,7 @@ export default Vue.extend({
           if (res.retCode === 200) {
             const data = res.retData;
             this.currentPoint = data;
-
+            console.log(this.currentPoint);
             if (data.categories && data.categories.length > 0) {
               this.categories = data.categories;
               this.activeTabIndex = 0;
@@ -465,7 +466,7 @@ export default Vue.extend({
 
             if (collectResource == '3') {
               this.currentPoint.collectFileIds = data.collectFileIds;
-              this.currentPoint.collectFileIds.forEach(async (v) => {
+              this.currentPoint.collectFileIds?.forEach(async (v) => {
                 if (!this.isImageFile(v.fileSuffix) && !this.isVideoFile(v.fileSuffix)) {
                   v.fileUrl = v.fileId;
                 } else {
@@ -474,7 +475,7 @@ export default Vue.extend({
                 return v;
               });
               this.currentPoint.priceFileIds = data.priceFileIds;
-              this.currentPoint.priceFileIds.forEach(async (v) => {
+              this.currentPoint.priceFileIds?.forEach(async (v) => {
                 if (!this.isImageFile(v.fileSuffix) && !this.isVideoFile(v.fileSuffix)) {
                   v.fileUrl = v.fileId;
                 } else {
@@ -485,7 +486,7 @@ export default Vue.extend({
             } else {
               this.currentPoint.areaname = data.areaName;
               this.currentPoint.collectFileIds = data.collectFiles;
-              this.currentPoint.collectFileIds.forEach(async (v) => {
+              this.currentPoint.collectFileIds?.forEach(async (v) => {
                 if (!this.isImageFile(v.fileSuffix) && !this.isVideoFile(v.fileSuffix)) {
                   v.fileUrl = v.fileId;
                 } else {
@@ -494,7 +495,7 @@ export default Vue.extend({
                 return v;
               });
               this.currentPoint.priceFileIds = data.priceFiles;
-              this.currentPoint.priceFileIds.forEach(async (v) => {
+              this.currentPoint.priceFileIds?.forEach(async (v) => {
                 if (!this.isImageFile(v.fileSuffix) && !this.isVideoFile(v.fileSuffix)) {
                   v.fileUrl = v.fileId;
                 } else {
@@ -897,7 +898,7 @@ export default Vue.extend({
           if (res.retCode === 200) {
             this.$message.success('保存成功');
             // 刷新当前品类数据
-            this.getCategoryDetail(this.currentCategoryData.collectCategoryId);
+            this.getCategoryDetail(this.currentCategoryData.collectCategoryId,this.collectResource);
           } else {
             this.$message.error(res.retMsg || '保存失败');
           }

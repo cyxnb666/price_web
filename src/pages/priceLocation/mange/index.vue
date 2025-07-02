@@ -471,6 +471,7 @@ export default Vue.extend({
         customerIdentification: '0',
         cityCode: '',
         townCode: '',
+        townshipCode: '',
         stallAddress: '',
         linkers: [{ linkerName: '', linkerMobile: '' }],
         stallVests: [],
@@ -578,6 +579,7 @@ export default Vue.extend({
       context[0] && (this.form.provinceCode = context[0]);
       context[1] && (this.form.cityCode = context[1]);
       context[2] && (this.form.townCode = context[2]);
+      context[3] && (this.form.townshipCode = context[3]);
       this.PriceLocation = context;
       console.log(context, node);
     },
@@ -684,7 +686,10 @@ export default Vue.extend({
         ...this.form,
         ...data,
       };
-      this.PriceLocation = [this.form.provinceCode || '', this.form.cityCode || '', this.form.townCode || ''];
+      console.log(this.form);
+      console.log(this.form.townshipCode);
+      this.PriceLocation = [this.form.provinceCode || '', this.form.cityCode || '', this.form.townCode || '', this.form.townshipCode || ''];
+      console.log(this.PriceLocation);
       this.title = '编辑采价点';
       this.$nextTick(() => {
         this.$refs.mapSelect.initMap(this.form.longitude, this.form.latitude);
@@ -769,7 +774,7 @@ export default Vue.extend({
   },
 });
 </script>
-    
+
     <style lang="less" scoped>
 .list-common-table {
   background-color: var(--td-bg-color-container);

@@ -10,14 +10,14 @@
         @submit="onSearch"
         :style="{ marginBottom: '40px' }"
       >
-        <t-row :gutter="20">
+        <t-row :gutter="20" v-if="tab.value !== 'WHOLE'">
           <t-col :span="2" class="operation-container">
-            <t-button 
-              @click="handleSetupContract" 
+            <t-button
+              @click="handleSetupContract"
               :style="{ marginLeft: '8px' }"
               :disabled="isAddButtonDisabled"
-            > 
-              新增规格 
+            >
+              新增规格
             </t-button>
           </t-col>
         </t-row>
@@ -45,9 +45,9 @@
           <template #op="slotProps">
             <a class="t-button-link" @click="handleClickDetail(slotProps)">编辑</a>
             <!-- 只有非统果类型才显示删除按钮 -->
-            <a 
-              v-if="tab.value !== 'TONGGUO'" 
-              class="t-button-link" 
+            <a
+              v-if="tab.value !== 'WHOLE'"
+              class="t-button-link"
               @click="handleClickDelete(slotProps)"
             >
               删除
@@ -76,7 +76,7 @@
       v-loading="loading"
     >
       <t-form ref="form" @submit="onSubmit" :data="form" :rules="FORM_RULES" label-align="left" :label-width="90">
-        <t-form-item v-if="tab.value !== 'TONGGUO'" label="规格" name="fvSpecsMax">
+        <t-form-item v-if="tab.value !== 'WHOLE'" label="规格" name="fvSpecsMax">
           <t-row :gutter="1">
             <t-space :size="14">
               <t-col :span="5.5">
@@ -95,7 +95,7 @@
                 <t-input-number
                   v-model="form.fvSpecsMax"
                   theme="normal"
-                  :decimal-places="2"      
+                  :decimal-places="2"
                   :max='999999'
                   :allowInputOverLimit='false'
                   :min="form.fvSpecsMin"
@@ -177,7 +177,7 @@ export default Vue.extend({
       specsType: {
         DIAMETER: 'mm',
         WEIGHT: 'g',
-        TONGGUO: '',
+        WHOLE: '',
       },
       title: '新增规格',
       formData: {
@@ -227,9 +227,9 @@ export default Vue.extend({
       const baseRules = {
         varietyUnit: [{ required: true, message: '请选择单位', type: 'error' }],
       };
-      
+
       // 只有非按统果时才需要规格验证
-      if (this.tab.value !== 'TONGGUO') {
+      if (this.tab.value !== 'WHOLE') {
         baseRules.fvSpecsMax = [
           {
             validator: this.validateSpecs,
@@ -237,12 +237,12 @@ export default Vue.extend({
         ];
         baseRules.fvSpecsMin = [{ required: true, message: '请输入规格', type: 'error' }];
       }
-      
+
       return baseRules;
     },
     isAddButtonDisabled() {
       // 如果是统果类型且total大于0，则禁用按钮
-      return this.tab.value === 'TONGGUO' && this.pagination.total > 0;
+      return this.tab.value === 'WHOLE' && this.pagination.total > 0;
     },
   },
   mounted() {
@@ -258,10 +258,10 @@ export default Vue.extend({
       }
     },
     formater(row) {
-      if (this.tab.value === 'TONGGUO') {
+      if (this.tab.value === 'WHOLE') {
         return '统果';
       }
-      
+
       let unit = this.tab.value == 'DIAMETER' ? 'mm' : 'g';
       if (row.fvSpecsMin && row.fvSpecsMax) {
         return `${row.fvSpecsMin}${unit}-${row.fvSpecsMax}${unit}`;
@@ -400,8 +400,8 @@ export default Vue.extend({
         let params = {
           condition: {
             ...this.form,
-            fvSpecsMax: this.tab.value === 'TONGGUO' ? '' : this.form.fvSpecsMax,
-            fvSpecsMin: this.tab.value === 'TONGGUO' ? '' : this.form.fvSpecsMin,
+            fvSpecsMax: this.tab.value === 'WHOLE' ? '' : this.form.fvSpecsMax,
+            fvSpecsMin: this.tab.value === 'WHOLE' ? '' : this.form.fvSpecsMin,
           },
         };
         console.log(params);
@@ -429,7 +429,7 @@ export default Vue.extend({
   },
 });
 </script>
-      
+
       <style lang="less" scoped>
 .list-common-table {
   background-color: var(--td-bg-color-container);

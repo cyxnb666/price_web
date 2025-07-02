@@ -28,7 +28,6 @@
             </t-form-item>
           </t-col>
         </t-row>
-
         <t-row :gutter="[16, 24]">
           <t-col :span="3">
             <t-form-item label="品种" name="varietyId">
@@ -80,8 +79,7 @@
           </template>
           <template #auditResult="{ row }">
             <t-tag v-if="row.auditResult === '0'" theme="warning" variant="light">待审核</t-tag>
-            <t-tag v-if="row.auditResult === '1'" theme="success" variant="light">审核通过</t-tag>
-            <t-tag v-if="row.auditResult === '2'" theme="danger" variant="light">审核不通过</t-tag>
+            <t-tag v-if="row.auditResult === '1'" theme="success" variant="light">已审核</t-tag>
           </template>
           <template #collectResource="{ row }">
             <p v-if="row.collectResource === '1'" theme="warning" variant="light">大额出售计划</p>
@@ -223,8 +221,7 @@ export default Vue.extend({
       auditStatusOptions: [
         { label: '全部', value: '' },
         { label: '待审核', value: '0' },
-        { label: '审核通过', value: '1' },
-        { label: '审核不通过', value: '2' },
+        { label: '已审核', value: '1' },
       ],
       customerIdentifierOptions: [
         { label: '全部', value: '' },

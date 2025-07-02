@@ -5,78 +5,72 @@
             <div class="form-container">
                 <t-form ref="taskForm" :data="formData" label-width="110px">
                     <t-row :gutter="[16, 24]" :style="{ marginBottom: '10px' }">
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="行政区划" name="areaCodes">
                                 <t-tree-select v-model="formData.areaCodes" filterable placeholder="请选择" clearable
                                     multiple :data="areaList" :treeProps="treeProps" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="采价点类型" name="pointType">
                                 <t-select v-model="formData.pointType" placeholder="请选择" clearable multiple
                                     :options="pointTypeOptions" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="采价点归属" name="pointAffiliation">
                                 <t-select v-model="formData.pointAffiliation" placeholder="请选择" clearable multiple
                                     :options="pointAffiliationOptions" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="采价点客户标识" name="customerType">
                                 <t-select v-model="formData.customerType" placeholder="请选择" clearable multiple
                                     :options="customerIdentifierOptions" />
                             </t-form-item>
                         </t-col>
-                    </t-row>
-
-                    <t-row :gutter="[16, 24]" :style="{ marginBottom: '10px' }">
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="品种" name="varietyId">
                                 <t-select v-model="formData.varietyId" placeholder="请选择" clearable
                                     :options="varietyOptions" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="计划周期" name="planPeriod">
                                 <t-date-range-picker v-model="formData.planPeriod" value-type="YYYY-MM-DD"
                                     placeholder="起始-止期" :disableDate="disablePastDates" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="上报周期(天)" name="reportPeriod">
                                 <t-input v-model="formData.reportPeriod" placeholder="输入正整数" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="发送短信提醒" name="sendSms">
                                 <t-select v-model="formData.sendSms" :options="smsReminderOptions">
                                 </t-select>
                             </t-form-item>
                         </t-col>
-                    </t-row>
-
-                    <t-row :gutter="[16, 24]" :style="{ marginBottom: '10px' }">
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <t-form-item label="采价方式" name="pricingMethod">
                                 <t-select v-model="formData.pricingMethod" placeholder="请选择"
                                     :options="pricingMethodOptions">
                                 </t-select>
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3" v-if="formData.pricingMethod === 'ratio'">
+                        <t-col :span="6" v-if="formData.pricingMethod === 'ratio'">
                             <t-form-item label="占比(%)" name="ratio">
                                 <t-input v-model="formData.ratio" placeholder="请输入占比" />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3" v-if="formData.pricingMethod === 'specific'">
+                        <t-col :span="6" v-if="formData.pricingMethod === 'specific'">
                             <t-form-item label="采价点" name="specificPoint">
                                 <t-select v-model="formData.specificPoint" :options="pointOptions" placeholder="请选择采价点"
                                     multiple />
                             </t-form-item>
                         </t-col>
-                        <t-col :span="3">
+                        <t-col :span="6">
                             <div class="action-buttons">
                                 <t-button theme="default" @click="onClose">取消</t-button>
                                 <t-button theme="success" @click="onPreview" style="margin-left: 8px">预览任务</t-button>
@@ -529,6 +523,7 @@ export default Vue.extend({
                     varietyId: parseInt(this.formData.varietyId, 10),
                     collectBgnDate: this.formData.planPeriod[0],
                     collectEndDate: this.formData.planPeriod[1],
+                    // 周期参数
                     escalationCycle: parseInt(this.formData.reportPeriod, 10),
                     isSmsMessages: this.formData.sendSms ? "1" : "0",
                     collectType: this.formData.pricingMethod === 'ratio' ? "1" : "2",
