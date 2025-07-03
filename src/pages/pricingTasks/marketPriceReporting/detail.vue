@@ -173,6 +173,10 @@
                               <t-switch :value="row.auditStatus === '1'"
                                 :disabled="basicInfo.auditStatus !== '待审核' || hideButtons === 'true'"
                                 @change="handleAuditStatusChange(row, $event)" />
+                              <span style="margin-left: 8px;">{{ row.auditStatus === '1' ? '正常' : '异常' }}</span>
+                            </template>
+                            <template #auditReason="{ row }">
+                              <span>{{ row.auditReason || '-' }}</span>
                             </template>
                           </t-table>
 
@@ -306,6 +310,13 @@
       :onCancel="onCancelAudit" width="420px">
       <p>{{ confirmDialogContent }}</p>
     </t-dialog>
+    <t-dialog :visible.sync="abnormalDialogVisible" header="填写异常原因" :onConfirm="onConfirmAbnormal"
+      :onCancel="onCancelAbnormal" width="420px">
+      <div style="margin: 16px 0;">
+        <label style="margin-bottom: 8px; display: block;">异常原因<span style="color: red;">*</span></label>
+        <t-textarea v-model="abnormalReason" placeholder="请输入异常原因..." :autosize="{ minRows: 3 }" />
+      </div>
+    </t-dialog>
   </t-loading>
 </template>
 
@@ -365,11 +376,15 @@ export default Vue.extend({
         { title: '规格', colKey: 'specification' },
         { title: '价格', colKey: 'unitPriceStr' },
         { title: '数量（kg）', colKey: 'weight' },
-        { title: '有效/无效', colKey: 'auditStatus' },
+        { title: '正常/异常', colKey: 'auditStatus' },
+        { title: '异常备注', colKey: 'auditReason' },
       ],
       categories: [], // 品类列表
       activeTabIndex: 0, // 当前激活的tab索引
       currentCategoryData: {}, // 当前品类的详细数据
+      abnormalDialogVisible: false,
+      currentEditingRow: null,
+      abnormalReason: '',
     };
   },
   computed: {
@@ -870,8 +885,32 @@ export default Vue.extend({
     },
     // 处理有效/无效状态变化
     handleAuditStatusChange(row, value) {
-      row.auditStatus = value ? '1' : '0';
-      console.log('规格ID:', row.collectSpecsId, '新状态:', row.auditStatus);
+      if (!value) { // 切换到异常状态
+        this.currentEditingRow = row;
+        this.abnormalReason = row.auditReason || '';
+        this.abnormalDialogVisible = true;
+      } else { // 切换到正常状态
+        row.auditStatus = '1';
+        row.auditReason = ''; // 清空异常原因
+      }
+    },
+    onConfirmAbnormal() {
+      if (!this.abnormalReason.trim()) {
+        this.$message.warning('请填写异常原因');
+        return;
+      }
+
+      this.currentEditingRow.auditStatus = '0';
+      this.currentEditingRow.auditReason = this.abnormalReason.trim();
+      this.abnormalDialogVisible = false;
+      this.currentEditingRow = null;
+      this.abnormalReason = '';
+    },
+
+    onCancelAbnormal() {
+      this.abnormalDialogVisible = false;
+      this.currentEditingRow = null;
+      this.abnormalReason = '';
     },
     handleSave() {
       if (!this.currentCategoryData.specss || this.currentCategoryData.specss.length === 0) {
@@ -886,6 +925,7 @@ export default Vue.extend({
         condition: {
           specss: this.currentCategoryData.specss.map(spec => ({
             auditStatus: spec.auditStatus,
+            auditReason: spec.auditReason || '',
             collectCategoryId: spec.collectCategoryId,
             collectPriceId: spec.collectPriceId,
             collectSpecsId: spec.collectSpecsId
@@ -898,7 +938,7 @@ export default Vue.extend({
           if (res.retCode === 200) {
             this.$message.success('保存成功');
             // 刷新当前品类数据
-            this.getCategoryDetail(this.currentCategoryData.collectCategoryId,this.collectResource);
+            this.getCategoryDetail(this.currentCategoryData.collectCategoryId, this.collectResource);
           } else {
             this.$message.error(res.retMsg || '保存失败');
           }

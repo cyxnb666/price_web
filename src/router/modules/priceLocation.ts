@@ -19,6 +19,12 @@ export default [
         component: () => import('@/pages/priceLocation/mange/index.vue'),
         meta: { title: '采价点维护', menuId:7 },
       },
+      {
+        path: 'priceLocationTemp',
+        name: 'priceLocationMangeTemp',
+        component: () => import('@/pages/priceLocation/mange/indexTemp.vue'),
+        meta: { title: '临时采价点', menuId:21 },
+      },
     ],
   },
 ];
